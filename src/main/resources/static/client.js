@@ -1,6 +1,7 @@
 //connecting to our signaling server
-let URL = "ws://" + window.location.host;
-var conn = new WebSocket(URL+"/socket");
+let protocol = (window.location.protocol==="http:")?"ws:":"wss:";
+let URL = protocol + "//" + window.location.host;
+let conn = new WebSocket(URL+"/socket");
 
 conn.onopen = function() {
     console.log("Connected to the signaling server");
@@ -100,16 +101,16 @@ function handleOffer(offer) {
         alert("Error creating an answer");
     });
 
-};
+}
 
 function handleCandidate(candidate) {
     peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-};
+}
 
 function handleAnswer(answer) {
     peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
     console.log("connection established successfully!!");
-};
+}
 
 function sendMessage() {
     dataChannel.send(input.value);
