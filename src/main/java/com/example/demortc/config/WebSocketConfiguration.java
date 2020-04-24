@@ -12,7 +12,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.SocketHandler;
 
 @Configuration
 @EnableWebSocket
