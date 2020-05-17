@@ -16,7 +16,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Configuration
 @EnableWebSocket
 public class WebSocketConfiguration implements WebSocketConfigurer {
-    @SneakyThrows
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
         webSocketHandlerRegistry.addHandler(new WebSocketHandler() {
@@ -37,7 +36,8 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
             @Override
             public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-
+                System.err.println("is session open - " +webSocketSession.isOpen());
+                throwable.printStackTrace();
             }
 
             @Override
@@ -47,7 +47,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
             @Override
             public boolean supportsPartialMessages() {
-                return false;
+                return true;
             }
         }, "/socket")
                 .setAllowedOrigins("*");

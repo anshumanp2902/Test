@@ -9,7 +9,10 @@ let conn = new WebSocket(URL+"/socket");
 function log(text) {
     const time = new Date();
 
-    console.log("[" + time.toLocaleTimeString() + "] " + text);
+    if (typeof text == 'Object' || typeof text == 'Array')
+        console.log("[" + time.toLocaleTimeString() + "] " + JSON.stringify(text));
+    else
+        console.log("[" + time.toLocaleTimeString() + "] " + text);
 }
 
 // Output an error message to console.
@@ -17,7 +20,10 @@ function log(text) {
 function log_error(text) {
     const time = new Date();
 
-    console.trace("Error - [" + time.toLocaleTimeString() + "] " + text);
+    if (typeof text === 'Object')
+        console.log("Error - [" + time.toLocaleTimeString() + "] " + JSON.stringify(text));
+    else
+        console.log("Error - [" + time.toLocaleTimeString() + "] " + text);
 }
 
 const mediaConstraints = {
@@ -34,10 +40,9 @@ conn.onopen = function() {
 };
 
 conn.onmessage = function(msg) {
-    log("Got message", msg.data);
+    log("Got message" + msg.data);
     const content = JSON.parse(msg.data);
     log(content);
-    const data = content.data;
     switch (content.type) {
 
         case "video-offer":  // Invitation and offer to chat
@@ -66,6 +71,7 @@ conn.onmessage = function(msg) {
 };
 
 function sendToServer(message) {
+    log("Websocket readyState - "+conn.readyState);
     conn.send(JSON.stringify(message));
 }
 
@@ -230,6 +236,7 @@ async function handleNegotiationNeededEvent() {
 // it to the <video> element for incoming media.
 function handleTrackEvent(event) {
     log("*** Track event");
+    log(event);
     document.getElementById("received_video").srcObject = event.streams[0];
     document.getElementById("hangup-button").disabled = false;
 
@@ -262,7 +269,8 @@ function closeVideoCall() {
         // Stop all transceivers on the connection
 
         myPeerConnection.getTransceivers().forEach(transceiver => {
-            transceiver.stop();
+            console.log(transceiver);
+            //transceiver.stop();
         });
 
         // Stop the webcam preview as well by pausing the <video>
